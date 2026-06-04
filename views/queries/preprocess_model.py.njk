@@ -94,13 +94,11 @@ references.append("{{ reference }}")
 {% endfor %}
 
 ## Other string fields
-name = r"""{{ name }}"""
 description = r"""{{ description }}"""
 problemStatement_txt = r"""{{ problemStatement_txt }}"""
 schematic_txt = r"""{{ schematic_txt }}"""
 
 model_with_merged_imports = {
-"name": name,
 "description": description,
 "problemStatement_txt": problemStatement_txt,
 "assumptions": assumptions,

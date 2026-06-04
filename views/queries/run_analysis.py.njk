@@ -52,12 +52,10 @@ references.append("{{ reference }}")
 {% endfor %}
 
 ## Other string fields
-name = f"""{{ name }}"""
 description = f"""{{ description }}"""
 schematic_txt = f"""{{ schematic_txt }}"""
 
 analysis_results = {
-"name": name,
 "description": description,
 "problemStatement_txt": "",
 "assumptions": assumptions,
