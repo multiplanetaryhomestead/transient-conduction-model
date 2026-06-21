@@ -22,7 +22,7 @@ parameter = {}
 parameter["description"] = "{{ parameter.description }}"
 parameter["variable"] = "{{ parameter.variable }}"
 parameter["value"] = {{ parameter.value }}
-parameter["unit"] = "{{ parameter.unit }}"
+parameter["units"] = "{{ parameter.units }}"
 parameters.append(parameter)
 {% endfor %}
 
@@ -36,7 +36,7 @@ constant = {}
 constant["description"] = "{{ constant.description }}"
 constant["variable"] = "{{ constant.variable }}"
 constant["value"] = {{ constant.value }}
-constant["unit"] = "{{ constant.unit }}"
+constant["units"] = "{{ constant.units }}"
 constants.append(constant)
 {% endfor %}
 
@@ -71,8 +71,8 @@ computation = {}
 computation["description"] = "{{ computation.description }}"
 computation["variable"] = "{{ computation.variable }}"
 computation["expression"] = "{{ computation.expression }}"
-{% if 'unit' in computation %}
-computation["unit"] = "{{ computation.unit }}"
+{% if 'units' in computation %}
+computation["units"] = "{{ computation.units }}"
 {% endif %}
 analysis.append(computation)
 {% endif %}

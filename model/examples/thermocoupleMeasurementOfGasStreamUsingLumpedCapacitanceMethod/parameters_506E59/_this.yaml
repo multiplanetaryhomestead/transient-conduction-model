@@ -1,4 +1,4 @@
 description: Initial temperature of thermocouple junction
 variable: T_i
 value: 25
-unit: degC
+units: degC
