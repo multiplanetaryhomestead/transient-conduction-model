@@ -7,7 +7,7 @@
 # - Fundamentals of Heat and Mass Transfer, 6e, p.261-263
 #
 
-from pint import UnitRegistry
+from pint import Quantity
 from sympy import *
 from sympy.physics.units import *
 from scipy.interpolate import interp1d
@@ -102,7 +102,7 @@ if "{{ computation.solveFor.units }}":
 ##### expression of solved variable
 expression = expr_dict[{{ computation.solveFor.variable }}]
 if(isinstance(expression, Expr)):
-    closedformsolution_as_expression = expression.subs(expr_dict).subs(expr_dict)
+    closedformsolution_as_expression = expression
 else:
     {{ computation.solveFor.variable }} = expression
     closedformsolution_as_expression = expression
@@ -125,7 +125,7 @@ if isinstance(expression, Expr):
             expr_dict[{{ computation.variable }}] = convert_to(expression, {{ computation.units }})
         except:
             pass
-    closedformsolution_as_expression = expr_dict[{{ computation.variable }}].subs(expr_dict).evalf(subs=expr_dict).simplify()
+    closedformsolution_as_expression = expression
 else:
     # otherwise set variable equal to expression
     {{ computation.variable }} = expression
@@ -138,7 +138,10 @@ except:
     closedformsolution_as_latex = closedformsolution_as_expression
 ##### compute expression of variable
 try:
-    closedformsolution_as_evaluated_result = "${:L}$".format(closedformsolution_as_expression.evalf())
+    sympy_expr = closedformsolution_as_expression.subs(expr_dict).subs(expr_dict).evalf(subs=expr_dict).simplify()
+    sympy_expr_as_coeff_Mul = sympy_expr.as_coeff_Mul()
+    quantity = Quantity(float(sympy_expr_as_coeff_Mul[0]), str(sympy_expr_as_coeff_Mul[1]))
+    closedformsolution_as_evaluated_result = "${}$".format(quantity)
 except:
     closedformsolution_as_evaluated_result = closedformsolution_as_expression
 ##### store results of computation
@@ -151,4 +154,3 @@ problemStatement_txt = f"""{{ problemStatement_txt }}"""
 analysis_results["problemStatement_txt"] = problemStatement_txt
 
 print(json.dumps(analysis_results, indent=2))
-
