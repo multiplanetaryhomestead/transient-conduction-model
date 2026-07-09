@@ -1,3 +1,0 @@
-description: Gaussian error function argument, w
-variable: w
-expression: interp1d(erf_w_list, w_list)(erf_w).item()

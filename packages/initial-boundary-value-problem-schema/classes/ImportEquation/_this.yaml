@@ -1,0 +1,3 @@
+is_a: ImportElement
+description: Represents an equation imported from a package
+slots: ((slots.yaml))

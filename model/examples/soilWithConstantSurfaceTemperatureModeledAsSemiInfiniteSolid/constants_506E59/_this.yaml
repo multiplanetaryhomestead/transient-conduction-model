@@ -1,4 +1,4 @@
 description: Specific heat of soil Table A.3 [T ~= 300K]
 variable: c
 value: 1840
-units: joule / (kilogram kelvin)
+units: joule / (kilogram * kelvin)

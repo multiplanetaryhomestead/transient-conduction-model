@@ -1,0 +1,2 @@
+description: Colon-separated package name and element paths to quantity or equation to be imported for use in analysis (e.g., transient-conduction-model:model.equations.lumpedCapacitanceMethod.biotNumber)
+close_mappings: ((close_mappings.yaml))

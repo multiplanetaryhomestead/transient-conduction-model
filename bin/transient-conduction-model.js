@@ -20,7 +20,7 @@ const numArgs = args.length;
 
 // Print help text for no args or --help flag
 if (numArgs == 0 || args.includes("--help")) {
-  console.log("Usage: transient-conduction <element-path> [OPTIONS]");
+  console.log("Usage: transient-conduction-model <element-path> [OPTIONS]");
   console.log("");
   console.log(
     "  Print in-memory representation of an element from the transient conduction model"
@@ -35,11 +35,11 @@ if (numArgs == 0 || args.includes("--help")) {
   );
   console.log("");
   console.log("Examples:");
-  console.log("  $ transient-conduction model");
-  console.log("  $ transient-conduction model -d 0");
-  console.log("  $ transient-conduction model -f json");
-  console.log("  $ transient-conduction model.equations.lumpedCapacitance");
-  console.log("  $ transient-conduction model.equations.lumpedCapacitance.biotNumber");
+  console.log("  $ transient-conduction-model model");
+  console.log("  $ transient-conduction-model model -d 0");
+  console.log("  $ transient-conduction-model model -f json");
+  console.log("  $ transient-conduction-model model.equations.lumpedCapacitance");
+  console.log("  $ transient-conduction-model model.equations.lumpedCapacitance.biotNumber");
   console.log("");
   process.exit(0);
 }

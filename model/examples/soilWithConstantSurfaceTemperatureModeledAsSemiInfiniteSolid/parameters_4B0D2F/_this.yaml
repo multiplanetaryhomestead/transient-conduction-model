@@ -1,4 +1,4 @@
 description: Temperature of soil at depth, x_m, after time t
 variable: T
-value: 0
-units: degC
+value: 273.15
+units: kelvin

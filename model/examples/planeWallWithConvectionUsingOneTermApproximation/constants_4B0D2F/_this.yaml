@@ -1,4 +1,4 @@
 description: Thermal diffusivity
 variable: α
 value: 0.0000188
-units: (square meter) / second
+units: meter**2 / second

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # (View definition for)
-# building and pre-processing model with merged imports in python.
+# building and pre-processing model with merged import in python.
 #
 
 import yaml
@@ -51,19 +51,25 @@ assumptions.append("{{ assumption }}")
 analysis = []
 {% for computation in analysis %}
 
-### Merge imports
-{% if 'imports' in computation %}
-### load contents of {{ import_item }} and append to analysis
-{% for import_item in computation.imports %}
-import_items_split_on_colon = "{{ import_item }}".split(":")
-cli_applet = import_items_split_on_colon[0]
-element_path = import_items_split_on_colon[1]
+### Merge import
+{% if computation.import %}
+computation = {}
+### load contents of {{ import }} and append to analysis
+import_element_split_on_colon = "{{ computation.import }}".split(":")
+cli_applet = import_element_split_on_colon[0]
+element_path = import_element_split_on_colon[1]
 # subprocess_result = subprocess.run(['npm', 'exec', '--', cli_applet, element_path], capture_output=True, text=True) # use this instead if calling CLI applet as a library
 subprocess_result = subprocess.run(['./bin/' + cli_applet + '.js', element_path], capture_output=True, text=True)
-file_contents = subprocess_result.stdout
-file_contents_as_dict = yaml.safe_load(file_contents)
-analysis.append(file_contents_as_dict)
+imported_contents = subprocess_result.stdout
+computation = yaml.safe_load(imported_contents)
+{% if 'solveFor' in computation %}
+computation["solveFor"] = {}
+{% for quantifiable_element_name, quantifiable_element_item in computation.solveFor %}
+computation["solveFor"]["{{ quantifiable_element_name }}"] = "{{ quantifiable_element_item }}"
 {% endfor %}
+{% endif %}
+analysis.append(computation)
+
 {% endif %}
 
 {% if 'description' in computation %}
@@ -98,7 +104,7 @@ description = r"""{{ description }}"""
 problemStatement_txt = r"""{{ problemStatement_txt }}"""
 schematic_txt = r"""{{ schematic_txt }}"""
 
-model_with_merged_imports = {
+model_with_merged_import = {
 "description": description,
 "problemStatement_txt": problemStatement_txt,
 "assumptions": assumptions,
@@ -110,5 +116,5 @@ model_with_merged_imports = {
 "references": references
 }
 
-print(yaml.dump(model_with_merged_imports, indent=2))
+print(yaml.dump(model_with_merged_import, indent=2))
 
