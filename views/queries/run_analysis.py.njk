@@ -7,41 +7,26 @@
 # - Fundamentals of Heat and Mass Transfer, 6e, p.261-263
 #
 
-from pint import Quantity
-from sympy import *
-from sympy.physics.units import *
+from pint import UnitRegistry
+from math import pi, log, exp, cos, sin
+from sympy import sympify, latex
 from scipy.interpolate import interp1d
 import json
 
-## Initialize empty dictionary of expressions
-expr_dict = {}
+u = UnitRegistry(autoconvert_offset_to_baseunit = True)
 
 ## Parameters
+
 {% for parameter in parameters %}
 ### {{ parameter.description }}
-#### Initialize symbolic variable for parameter
-{{ parameter.variable }} = Symbol("{{ parameter.variable }}")
-#### add parameter to dictionary of symbolic equations and units
-expr_dict[{{ parameter.variable }}] = {{ parameter.value }}
-if "{{ parameter.units }}":
-    try:
-        expr_dict[{{ parameter.variable }}] = {{ parameter.value }}*{{ parameter.units }}
-    except:
-        pass
+{{ parameter.variable }} = {{ parameter.value }} * u('{{ parameter.unit }}')
 {% endfor %}
 
 ## Constants
+
 {% for constant in constants %}
 ### {{ constant.description }}
-#### Initialize symbolic variable for constant
-{{ constant.variable }} = Symbol("{{ constant.variable }}")
-#### add constant to dictionary of symbolic equations
-expr_dict[{{ constant.variable }}] = {{ constant.value }}
-if "{{ constant.units }}":
-    try:
-        expr_dict[{{ constant.variable }}] = {{ constant.value }}*{{ constant.units }}
-    except:
-        pass
+{{ constant.variable }} = {{ constant.value }} * u('{{ constant.unit }}')
 {% endfor %}
 
 ## Assumptions
@@ -50,6 +35,7 @@ assumptions = []
 {% for assumption in assumptions %}
 assumptions.append("{{ assumption }}")
 {% endfor %}
+
 
 ## comments
 
@@ -82,71 +68,28 @@ analysis_results = {
 ## Perform initial-boundary value problem
 
 {% for computation in analysis %}
+### {{ computation.description }}
+{{ computation.variable }} = {{ computation.expression }}
+{% if computation.unit %}
+{{ computation.variable }}.ito('{{ computation.unit }}')
+{% endif %}
 computation_list_item = {
     "description": "",
     "computation": "",
 }
-    {% if computation.solveFor %}
-### {{ computation.solveFor.description }}
-description = "{{ computation.solveFor.description }}"
-variable = "{{ computation.solveFor.variable }}"
-#### Initialize symbolic variable for variable
-{{ computation.solveFor.variable }} = Symbol(variable)
-##### use algebraic solver to solve for non-isolated variable of interest and add expression to dictionary of symbolic equations
-expr_dict[{{ computation.solveFor.variable }}] = solve(Eq({{ computation.variable }}, {{ computation.expression }}), {{ computation.solveFor.variable }})[0]
-if "{{ computation.solveFor.units }}":
-    try:
-        expr_dict[{{ computation.solveFor.variable }}] = convert_to(solve(Eq({{ computation.variable }}, {{ computation.expression }}), {{ computation.solveFor.variable }})[0], {{ computation.solveFor.units }})
-    except:
-        pass
-##### expression of solved variable
-expression = expr_dict[{{ computation.solveFor.variable }}]
-if(isinstance(expression, Expr)):
-    closedformsolution_as_expression = expression
-else:
-    {{ computation.solveFor.variable }} = expression
-    closedformsolution_as_expression = expression
-    {% else %}
-### {{ computation.description }}
 description = "{{ computation.description }}"
-variable = "{{ computation.variable }}"
-#### Initialize symbolic variable for variable
-if "interp1d" in "{{ computation.expression }}":
-    expression = {{ computation.expression | replace(".evalf()", ".subs(expr_dict).evalf(subs=expr_dict).simplify()") }}
-else:
-    expression = {{ computation.expression }}
-if isinstance(expression, Expr):
-    # if expression is an instance of Expr, create symbolic variable
-    {{ computation.variable }} = Symbol(variable)
-    # add expression to dictionary of symbolic equations
-    expr_dict[{{ computation.variable }}] = expression
-    if "{{ computation.units }}":
-        try:
-            expr_dict[{{ computation.variable }}] = convert_to(expression, {{ computation.units }})
-        except:
-            pass
-    closedformsolution_as_expression = expression
-else:
-    # otherwise set variable equal to expression
-    {{ computation.variable }} = expression
-    closedformsolution_as_expression = expression
-    {% endif %}
-##### render latex expression of variable
 try:
-    closedformsolution_as_latex = "${}$".format(latex(sympify(closedformsolution_as_expression)))
+    latex_expression = "${}$".format(latex(sympify("{{ computation.expression }}")))
 except:
-    closedformsolution_as_latex = closedformsolution_as_expression
-##### compute expression of variable
+    latex_expression = "{{ computation.expression }}"
+
 try:
-    sympy_expr = closedformsolution_as_expression.subs(expr_dict).subs(expr_dict).evalf(subs=expr_dict).simplify()
-    sympy_expr_as_coeff_Mul = sympy_expr.as_coeff_Mul()
-    quantity = Quantity(float(sympy_expr_as_coeff_Mul[0]), str(sympy_expr_as_coeff_Mul[1]))
-    closedformsolution_as_evaluated_result = "${}$".format(quantity)
+    computation_result = "${:L}$".format({{ computation.variable }})
 except:
-    closedformsolution_as_evaluated_result = closedformsolution_as_expression
-##### store results of computation
+    computation_result = {{ computation.variable }}
+computation = "{{ computation.variable }} = {0} = {1}".format(latex_expression, computation_result)
 computation_list_item["description"] = description
-computation_list_item["computation"] = "{0} = {1} = {2}".format(variable, closedformsolution_as_latex, closedformsolution_as_evaluated_result)
+computation_list_item["computation"] = computation
 analysis_results["results"].append(computation_list_item)
 {% endfor %}
 
@@ -154,3 +97,4 @@ problemStatement_txt = f"""{{ problemStatement_txt }}"""
 analysis_results["problemStatement_txt"] = problemStatement_txt
 
 print(json.dumps(analysis_results, indent=2))
+
