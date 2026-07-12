@@ -1,4 +1,4 @@
 description: thermal conductivity of thermocouple junction
 variable: k
 value: 20
-units: watt / (meter * kelvin)
+units: watt / (meter * Kelvin)

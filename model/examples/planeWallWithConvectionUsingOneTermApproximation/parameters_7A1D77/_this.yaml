@@ -1,4 +1,4 @@
 description: Convection coefficient
 variable: h
 value: 500
-units: watt / (meter**2 * kelvin)
+units: watt / (meter**2 * Kelvin)

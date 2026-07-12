@@ -1,4 +1,4 @@
 description: Initial temperature of pipe walls
 variable: T_i
 value: 263.15
-units: kelvin
+units: Kelvin

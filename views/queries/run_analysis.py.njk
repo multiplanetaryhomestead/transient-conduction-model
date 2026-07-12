@@ -7,27 +7,28 @@
 # - Fundamentals of Heat and Mass Transfer, 6e, p.261-263
 #
 
-from pint import UnitRegistry
 from numpy import *
-from sympy import sympify, latex
 from scipy.special import *
+from astropy.units import *
+from sympy import sympify, latex
 from scipy.interpolate import interp1d
 import json
 
-u = UnitRegistry(autoconvert_offset_to_baseunit = True)
+# Define dimensionless unit for use with astropy
+dimensionless = dimensionless_unscaled
 
 ## Parameters
 
 {% for parameter in parameters %}
 ### {{ parameter.description }}
-{{ parameter.variable }} = {{ parameter.value }} * u('{{ parameter.units }}')
+{{ parameter.variable }} = {{ parameter.value }} * {{ parameter.units }}
 {% endfor %}
 
 ## Constants
 
 {% for constant in constants %}
 ### {{ constant.description }}
-{{ constant.variable }} = {{ constant.value }} * u('{{ constant.units }}')
+{{ constant.variable }} = {{ constant.value }} * {{ constant.units }}
 {% endfor %}
 
 ## Assumptions
@@ -72,7 +73,7 @@ analysis_results = {
 ### {{ computation.description }}
 {{ computation.variable }} = {{ computation.expression }}
 {% if computation.units %}
-{{ computation.variable }}.ito('{{ computation.units }}')
+{{ computation.variable }} = {{ computation.variable }}.to({{ computation.units }})
 {% endif %}
 computation_list_item = {
     "description": "",

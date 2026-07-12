@@ -1,4 +1,4 @@
 description: Final temperature of thermocouple junction
 variable: Tf
 value: 472.15
-units: kelvin
+units: Kelvin

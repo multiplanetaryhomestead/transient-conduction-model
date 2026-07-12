@@ -1,4 +1,4 @@
 description: Initial temperature of thermocouple junction
 variable: T_i
 value: 298.15
-units: kelvin
+units: Kelvin
