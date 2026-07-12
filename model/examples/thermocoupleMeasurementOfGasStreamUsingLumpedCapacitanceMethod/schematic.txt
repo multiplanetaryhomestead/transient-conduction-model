@@ -6,7 +6,7 @@
 ```
        ---------- 
       /          \\          T_inf = {T_inf}
-     /            \\         h = {(h, 3)}
+     /            \\         h = {h}
     / Thermocouple \\            <----
     \\   junction   /            <----
      \\            /         ( gas stream )
