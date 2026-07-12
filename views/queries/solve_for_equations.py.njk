@@ -67,6 +67,9 @@ closedformsolution["units"] = "{{ closedformsolution.units }}"
 closedformsolution["variable"] = "{{ closedformsolution.solveFor.variable }}"
 ##### use algebraic solver to solve for non-isolated variable of interest and overwrite old expression
 closedformsolution["expression"] = str(solve(Eq({{ closedformsolution.variable }}, {{ closedformsolution.expression }}), {{ closedformsolution.solveFor.variable }})[0])
+        {% if closedformsolution.solveFor.units %}
+closedformsolution["units"] = "{{ closedformsolution.solveFor.units }}"
+        {% endif %}
     {% endif %}
 analysis.append(closedformsolution)
 {% endfor %}
