@@ -1,4 +1,4 @@
 description: Temperature of gas stream
 variable: T_inf
 value: 473.15
-units: Kelvin
+unit: Kelvin

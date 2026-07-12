@@ -21,14 +21,14 @@ dimensionless = dimensionless_unscaled
 
 {% for parameter in parameters %}
 ### {{ parameter.description }}
-{{ parameter.variable }} = {{ parameter.value }} * {{ parameter.units }}
+{{ parameter.variable }} = {{ parameter.value }} * {{ parameter.unit }}
 {% endfor %}
 
 ## Constants
 
 {% for constant in constants %}
 ### {{ constant.description }}
-{{ constant.variable }} = {{ constant.value }} * {{ constant.units }}
+{{ constant.variable }} = {{ constant.value }} * {{ constant.unit }}
 {% endfor %}
 
 ## Assumptions
@@ -72,8 +72,8 @@ analysis_results = {
 {% for computation in analysis %}
 ### {{ computation.description }}
 {{ computation.variable }} = {{ computation.expression }}
-{% if computation.units %}
-{{ computation.variable }} = {{ computation.variable }}.to({{ computation.units }})
+{% if computation.unit %}
+{{ computation.variable }} = {{ computation.variable }}.to({{ computation.unit }})
 {% endif %}
 computation_list_item = {
     "description": "",

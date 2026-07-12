@@ -20,7 +20,7 @@ parameter = {}
 parameter["description"] = "{{ parameter.description }}"
 parameter["variable"] = "{{ parameter.variable }}"
 parameter["value"] = {{ parameter.value }}
-parameter["units"] = "{{ parameter.units }}"
+parameter["unit"] = "{{ parameter.unit }}"
 parameters.append(parameter)
 {% endfor %}
 
@@ -36,7 +36,7 @@ constant = {}
 constant["description"] = "{{ constant.description }}"
 constant["variable"] = "{{ constant.variable }}"
 constant["value"] = {{ constant.value }}
-constant["units"] = "{{ constant.units }}"
+constant["unit"] = "{{ constant.unit }}"
 constants.append(constant)
 {% endfor %}
 
@@ -56,8 +56,8 @@ closedformsolution = {}
 closedformsolution["description"] = "{{ closedformsolution.description }}"
 closedformsolution["variable"] = "{{ closedformsolution.variable }}"
 closedformsolution["expression"] = "{{ closedformsolution.expression }}"
-    {% if closedformsolution.units %}
-closedformsolution["units"] = "{{ closedformsolution.units }}"
+    {% if closedformsolution.unit %}
+closedformsolution["unit"] = "{{ closedformsolution.unit }}"
     {% endif %}
     {% if closedformsolution.solveFor %}
 #### Run algebraic equation solver if solveFor property is specified
@@ -67,8 +67,8 @@ closedformsolution["units"] = "{{ closedformsolution.units }}"
 closedformsolution["variable"] = "{{ closedformsolution.solveFor.variable }}"
 ##### use algebraic solver to solve for non-isolated variable of interest and overwrite old expression
 closedformsolution["expression"] = str(solve(Eq({{ closedformsolution.variable }}, {{ closedformsolution.expression }}), {{ closedformsolution.solveFor.variable }})[0])
-        {% if closedformsolution.solveFor.units %}
-closedformsolution["units"] = "{{ closedformsolution.solveFor.units }}"
+        {% if closedformsolution.solveFor.unit %}
+closedformsolution["unit"] = "{{ closedformsolution.solveFor.unit }}"
         {% endif %}
     {% endif %}
 analysis.append(closedformsolution)

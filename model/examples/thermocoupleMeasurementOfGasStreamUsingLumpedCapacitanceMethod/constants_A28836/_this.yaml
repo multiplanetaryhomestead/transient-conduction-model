@@ -1,4 +1,4 @@
 description: density of thermocouple junction
 variable: ρ
 value: 8500
-units: kilogram / meter**3
+unit: kilogram / meter**3
