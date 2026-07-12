@@ -86,7 +86,7 @@ except:
     latex_expression = "{{ computation.expression }}"
 
 try:
-    computation_result = "${:L}$".format({{ computation.variable }})
+    computation_result = "{:latex}".format({{ computation.variable }})
 except:
     computation_result = {{ computation.variable }}
 computation = "{{ computation.variable }} = {0} = {1}".format(latex_expression, computation_result)

@@ -1,7 +1,7 @@
-* T_i = ${T_i}$
-* k = ${k}$
-* c = ${c}$
-* p = ${ρ}$
+* T_i = {T_i:latex}
+* k = {k:latex}
+* c = {c:latex}
+* p = {ρ:latex}
 
 ```
        ---------- 

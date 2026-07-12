@@ -1,6 +1,5 @@
 A thermocouple junction is used for temperature measurement in a gas stream.
 Determine 1) The junction diameter needed for the thermocouple to have a time
 constant of 1 second 2) How long it will take for the junction to reach
-${Tf}$ If the junction is at ${T_i}$ and placed in a gas
-stream that is at ${T_inf}$.
-
+{Tf:latex} If the junction is at {T_i:latex} and placed in a gas
+stream that is at {T_inf:latex}.
