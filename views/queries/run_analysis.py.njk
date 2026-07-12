@@ -20,14 +20,14 @@ u = UnitRegistry(autoconvert_offset_to_baseunit = True)
 
 {% for parameter in parameters %}
 ### {{ parameter.description }}
-{{ parameter.variable }} = {{ parameter.value }} * u('{{ parameter.unit }}')
+{{ parameter.variable }} = {{ parameter.value }} * u('{{ parameter.units }}')
 {% endfor %}
 
 ## Constants
 
 {% for constant in constants %}
 ### {{ constant.description }}
-{{ constant.variable }} = {{ constant.value }} * u('{{ constant.unit }}')
+{{ constant.variable }} = {{ constant.value }} * u('{{ constant.units }}')
 {% endfor %}
 
 ## Assumptions
@@ -71,8 +71,8 @@ analysis_results = {
 {% for computation in analysis %}
 ### {{ computation.description }}
 {{ computation.variable }} = {{ computation.expression }}
-{% if computation.unit %}
-{{ computation.variable }}.ito('{{ computation.unit }}')
+{% if computation.units %}
+{{ computation.variable }}.ito('{{ computation.units }}')
 {% endif %}
 computation_list_item = {
     "description": "",
