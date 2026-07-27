@@ -11,10 +11,13 @@ plugins {
     id 'base'
 }
 
+def binDir = "$projectDir/bin"
+def nodeModulesDir = "$projectDir/node_modules"
 def pythonVenvDirName = "venv"
 def pythonVenvDir = "$projectDir/$pythonVenvDirName"
 def yamlExtension = ".yaml"
 def jsonExtension = ".json"
+def jsExtension = ".js"
 def pythonExtension = ".py"
 def markdownExtension = ".md"
 def unifiedSchemaFileName = "unifiedSchema"
@@ -118,8 +121,16 @@ tasks.register('validateModelExamples') {
     }
 }
 
-tasks.register('buildImportsMerger') {
+tasks.register('symlinkCLIAppletIntoNodeModules', Exec) {
     dependsOn(validateModelExamples)
+    inputs.files(fileTree("$binDir"))
+        .withPathSensitivity(PathSensitivity.ABSOLUTE)
+    outputs.dir(layout.buildDirectory.dir("$nodeModulesDir"))
+    commandLine "bash", "-c", "ln -sv $binDir/$projectDir.name$jsExtension $nodeModulesDir/.bin/projectDir"
+}
+
+tasks.register('buildImportsMerger') {
+    dependsOn(symlinkCLIAppletIntoNodeModules)
     inputs.files(fileTree("$modelExamplesBuildDir"))
         .withPathSensitivity(PathSensitivity.ABSOLUTE)
     outputs.dir(layout.buildDirectory.dir("$mergedImportsModelBuildDir"))

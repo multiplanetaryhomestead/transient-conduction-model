@@ -58,8 +58,7 @@ computation = {}
 import_element_split_on_colon = "{{ computation.import }}".split(":")
 cli_applet = import_element_split_on_colon[0]
 element_path = import_element_split_on_colon[1]
-# subprocess_result = subprocess.run(['npm', 'exec', '--', cli_applet, element_path], capture_output=True, text=True) # use this instead if calling CLI applet as a library
-subprocess_result = subprocess.run(['./bin/' + cli_applet + '.js', element_path], capture_output=True, text=True)
+subprocess_result = subprocess.run(['npm', 'exec', '--', cli_applet, element_path], capture_output=True, text=True)
 imported_contents = subprocess_result.stdout
 computation = yaml.safe_load(imported_contents)
 {% if 'solveFor' in computation %}
