@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "linkml>=1.10.0",
-    "pint>=0.24.4",
+    "astropy>=8.0.1",
     "pyyaml>=6.0.2",
     "scipy>=1.15.2",
     "sympy>=1.14.0",

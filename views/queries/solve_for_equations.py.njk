@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+#
+# (View definition for)
+# building and pre-processing model with merged import in python.
+#
+
+from sympy import *
+import yaml
+import subprocess
+
+## Parameters
+### Initialize parameters list for serialization
+parameters = []
+{% for parameter in parameters %}
+### {{ parameter.description }}
+#### Initialize symbolic variable for parameter
+{{ parameter.variable }} = Symbol("{{ parameter.variable }}")
+#### append parameter to parameters list
+parameter = {}
+parameter["description"] = "{{ parameter.description }}"
+parameter["variable"] = "{{ parameter.variable }}"
+parameter["value"] = {{ parameter.value }}
+parameter["unit"] = "{{ parameter.unit }}"
+parameters.append(parameter)
+{% endfor %}
+
+## Constants
+### Initialize constants list for serialization
+constants = []
+{% for constant in constants %}
+### {{ constant.description }}
+#### Initialize symbolic variable for constant
+{{ constant.variable }} = Symbol("{{ constant.variable }}")
+#### append constant to constants list
+constant = {}
+constant["description"] = "{{ constant.description }}"
+constant["variable"] = "{{ constant.variable }}"
+constant["value"] = {{ constant.value }}
+constant["unit"] = "{{ constant.unit }}"
+constants.append(constant)
+{% endfor %}
+
+## Assumptions
+
+assumptions = []
+{% for assumption in assumptions %}
+assumptions.append("{{ assumption }}")
+{% endfor %}
+
+## Analysis to be performed
+### Initialize analysis list for serialization
+analysis = []
+{% for closedformsolution in analysis %}
+#### append closedformsolution to analysis list
+closedformsolution = {}
+closedformsolution["description"] = "{{ closedformsolution.description }}"
+closedformsolution["variable"] = "{{ closedformsolution.variable }}"
+closedformsolution["expression"] = "{{ closedformsolution.expression }}"
+    {% if closedformsolution.unit %}
+closedformsolution["unit"] = "{{ closedformsolution.unit }}"
+    {% endif %}
+    {% if closedformsolution.solveFor %}
+#### Run algebraic equation solver if solveFor property is specified
+##### Initialize symbolic variable for variable to be solved
+{{ closedformsolution.solveFor.variable }} = Symbol("{{ closedformsolution.solveFor.variable }}")
+##### Overwrite old variable
+closedformsolution["variable"] = "{{ closedformsolution.solveFor.variable }}"
+##### Overwrite old description
+closedformsolution["description"] = "{{ closedformsolution.solveFor.description }}"
+##### use algebraic solver to solve for non-isolated variable of interest and overwrite old expression
+closedformsolution["expression"] = str(solve(Eq({{ closedformsolution.variable }}, {{ closedformsolution.expression }}), {{ closedformsolution.solveFor.variable }})[0])
+        {% if closedformsolution.solveFor.unit %}
+closedformsolution["unit"] = "{{ closedformsolution.solveFor.unit }}"
+        {% endif %}
+    {% endif %}
+analysis.append(closedformsolution)
+{% endfor %}
+
+## comments
+
+comments = []
+{% for comment in comments %}
+comments.append("{{ comment }}")
+{% endfor %}
+
+## references
+
+references = []
+{% for reference in references %}
+references.append("{{ reference }}")
+{% endfor %}
+
+## Other string fields
+description = r"""{{ description }}"""
+problemStatement_txt = r"""{{ problemStatement_txt }}"""
+schematic_txt = r"""{{ schematic_txt }}"""
+
+model_with_merged_import = {
+"description": description,
+"problemStatement_txt": problemStatement_txt,
+"assumptions": assumptions,
+"parameters": parameters,
+"constants": constants,
+"schematic_txt": schematic_txt,
+"analysis": analysis,
+"comments": comments,
+"references": references
+}
+
+print(yaml.dump(model_with_merged_import, indent=2))
+

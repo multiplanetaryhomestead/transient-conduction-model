@@ -9,7 +9,7 @@
     "model"
   ],
   "bin": {
-    "transient-conduction": "./bin/transient-conduction.js"
+    "transient-conduction-model": "./bin/transient-conduction-model.js"
   },
   "repository": {
     "type": "git",

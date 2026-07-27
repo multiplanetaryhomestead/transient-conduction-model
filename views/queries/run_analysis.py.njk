@@ -7,26 +7,28 @@
 # - Fundamentals of Heat and Mass Transfer, 6e, p.261-263
 #
 
-from pint import UnitRegistry
-from math import pi, log, exp, cos, sin
+from numpy import *
+from scipy.special import *
+from astropy.units import *
 from sympy import sympify, latex
 from scipy.interpolate import interp1d
 import json
 
-u = UnitRegistry(autoconvert_offset_to_baseunit = True)
+# Define dimensionless unit for use with astropy
+dimensionless = dimensionless_unscaled
 
 ## Parameters
 
 {% for parameter in parameters %}
 ### {{ parameter.description }}
-{{ parameter.variable }} = {{ parameter.value }} * u('{{ parameter.unit }}')
+{{ parameter.variable }} = {{ parameter.value }} * {{ parameter.unit }}
 {% endfor %}
 
 ## Constants
 
 {% for constant in constants %}
 ### {{ constant.description }}
-{{ constant.variable }} = {{ constant.value }} * u('{{ constant.unit }}')
+{{ constant.variable }} = {{ constant.value }} * {{ constant.unit }}
 {% endfor %}
 
 ## Assumptions
@@ -71,7 +73,7 @@ analysis_results = {
 ### {{ computation.description }}
 {{ computation.variable }} = {{ computation.expression }}
 {% if computation.unit %}
-{{ computation.variable }}.ito('{{ computation.unit }}')
+{{ computation.variable }} = {{ computation.variable }}.to({{ computation.unit }})
 {% endif %}
 computation_list_item = {
     "description": "",
@@ -84,7 +86,7 @@ except:
     latex_expression = "{{ computation.expression }}"
 
 try:
-    computation_result = "${:L}$".format({{ computation.variable }})
+    computation_result = "{:latex}".format({{ computation.variable }})
 except:
     computation_result = {{ computation.variable }}
 computation = "{{ computation.variable }} = {0} = {1}".format(latex_expression, computation_result)

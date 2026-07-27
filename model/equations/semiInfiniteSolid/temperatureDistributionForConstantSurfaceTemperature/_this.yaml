@@ -1,0 +1,4 @@
+description: Temperature distribution, T = T(x,t), for constant surface temperature, T(0,t) = T_s
+variable: T
+expression: T_s + (T_i - T_s)*erf(x/(2*(α*t)**0.5))
+unit: Kelvin

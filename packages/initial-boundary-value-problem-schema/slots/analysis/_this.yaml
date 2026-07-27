@@ -3,4 +3,4 @@ multivalued: true
 inlined_as_list: true
 any_of:
   - range: ClosedFormSolution
-  - range: ImportElement
+  - range: ImportEquation

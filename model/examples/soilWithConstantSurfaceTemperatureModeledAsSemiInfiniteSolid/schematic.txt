@@ -1,7 +1,7 @@
-* k = ${k:L}$
-* c = ${c:L}$
-* p = ${ρ:L}$
-* α = ${α:L}$
+* k = {k:latex}
+* c = {c:latex}
+* ρ = {ρ:latex}
+* α = {α:latex}
 
 ```
                       T_s = {T_s}

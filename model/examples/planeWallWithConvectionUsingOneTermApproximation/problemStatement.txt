@@ -1,7 +1,7 @@
-Consider a steel pipeline (AISI 1010) that is ${D:L}$ in diameter and has a wall thickness of ${L:L}$.
-The pipe is heavily insulated on the outside, and before the initiation of flow, the walls of the pipe are at a uniform temperature of ${T_i:L}$.
-With the initiation of flow, hot oil at ${T_inf:L}$ is pumped through the pipe, creating a convective condition corresponding to ${h:L}$ at the inner surface of the pipe.
-1. What are the appropriate Biot and Fourier numbers ${t:L}$ after the initiation of flow?
-2. At t = ${t:L}$, what is the temperature of the exterior pipe surface covered by the insulation?
-3. What is the heat flux q_dot'' ${q_dot.units:L}$ to the pipe from the oil at t = ${t:L}$?
-4. How much energy per meter of pipe length has been transferred from the oil to the pipe at t = ${t:L}$?
+Consider a steel pipeline (AISI 1010) that is {D:latex} in diameter and has a wall thickness of {L:latex}.
+The pipe is heavily insulated on the outside, and before the initiation of flow, the walls of the pipe are at a uniform temperature of {T_i:latex}.
+With the initiation of flow, hot oil at {T_inf:latex} is pumped through the pipe, creating a convective condition corresponding to {h:latex} at the inner surface of the pipe.
+1. What are the appropriate Biot and Fourier numbers {t:latex} after the initiation of flow?
+2. At t = {t:latex}, what is the temperature of the exterior pipe surface covered by the insulation?
+3. What is the heat flux q_dot'' to the pipe from the oil at t = {t:latex}?
+4. How much energy per meter of pipe length has been transferred from the oil to the pipe at t = {t:latex}?

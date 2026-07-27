@@ -1,1 +1,1 @@
-imports: ((imports.yaml))
+import: transient-conduction-model:model.equations.oneTermApproximation.theta0

@@ -1,4 +1,0 @@
-description: Depth to which soil has frozen
-variable: x_m
-expression: w * 2 * (α*t)**0.5
-unit: meters

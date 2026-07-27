@@ -11,10 +11,13 @@ plugins {
     id 'base'
 }
 
+def binDir = "$projectDir/bin"
+def nodeModulesDir = "$projectDir/node_modules"
 def pythonVenvDirName = "venv"
 def pythonVenvDir = "$projectDir/$pythonVenvDirName"
 def yamlExtension = ".yaml"
 def jsonExtension = ".json"
+def jsExtension = ".js"
 def pythonExtension = ".py"
 def markdownExtension = ".md"
 def unifiedSchemaFileName = "unifiedSchema"
@@ -27,11 +30,13 @@ def modelEquationsBuildDir = "$buildDir/$modelEquationsDirName"
 def modelExamplesDirName = "$modelDirName/examples"
 def modelExamplesSrcDir = "$projectDir/$modelExamplesDirName"
 def modelExamplesBuildDir = "$buildDir/$modelExamplesDirName"
-def preprocessedModelTemplateFileName = "preprocess_model.py.njk"
+def importsMergerTemplateFileName = "merge_imports.py.njk"
+def solveForEquationsTemplateFileName = "solve_for_equations.py.njk"
 def analyticalModelTemplateFileName = "run_analysis.py.njk"
 def viewsDirName = "views"
 def queryDirName = "$viewsDirName/queries"
-def preprocessedModelBuildDir = "$buildDir/$queryDirName"
+def mergedImportsModelBuildDir = "$buildDir/$queryDirName/mergedImports"
+def solvedEquationsModelBuildDir = "$buildDir/$queryDirName/solvedEquations"
 def analyticalModelBuildDirName = "analysis"
 def analyticalModelBuildDir = "$buildDir/$queryDirName/$analyticalModelBuildDirName"
 def querySrcDir = "$projectDir/$queryDirName"
@@ -116,45 +121,79 @@ tasks.register('validateModelExamples') {
     }
 }
 
-tasks.register('buildPreprocessor') {
+tasks.register('symlinkCLIAppletIntoNodeModules', Exec) {
     dependsOn(validateModelExamples)
+    inputs.files(fileTree("$binDir"))
+        .withPathSensitivity(PathSensitivity.ABSOLUTE)
+    outputs.dir(layout.buildDirectory.dir("$nodeModulesDir"))
+    commandLine "bash", "-c", "ln -sv $binDir/$projectDir.name$jsExtension $nodeModulesDir/.bin/projectDir"
+}
+
+tasks.register('buildImportsMerger') {
+    dependsOn(symlinkCLIAppletIntoNodeModules)
     inputs.files(fileTree("$modelExamplesBuildDir"))
         .withPathSensitivity(PathSensitivity.ABSOLUTE)
-    outputs.dir(layout.buildDirectory.dir("$preprocessedModelBuildDir"))
+    outputs.dir(layout.buildDirectory.dir("$mergedImportsModelBuildDir"))
     doLast {
         new File("$modelExamplesSrcDir").eachDir { dir ->
             exec {
-                //commandLine "bash", "-c", "ls $preprocessedModelBuildDir/$dir.name$pythonExtension"
-                //commandLine "bash", "-c", "npm exec -- nunjucks -d $modelExamplesBuildDir/$dir.name$yamlExtension $querySrcDir/$preprocessedModelTemplateFileName"
-                commandLine "bash", "-c", "npm exec -- nunjucks -d $modelExamplesBuildDir/$dir.name$yamlExtension $querySrcDir/$preprocessedModelTemplateFileName > $preprocessedModelBuildDir/$dir.name$pythonExtension"
+                commandLine "bash", "-c", "npm exec -- nunjucks -d $modelExamplesBuildDir/$dir.name$yamlExtension $querySrcDir/$importsMergerTemplateFileName > $mergedImportsModelBuildDir/$dir.name$pythonExtension"
             }
         }
     }
 }
 
-tasks.register('generatePreprocessedModelExamples') {
-    dependsOn(buildPreprocessor)
-    inputs.files(fileTree("$preprocessedModelBuildDir"))
+tasks.register('buildModelExamplesWithMergedImports') {
+    dependsOn(buildImportsMerger)
+    inputs.files(fileTree("$mergedImportsModelBuildDir"))
         .withPathSensitivity(PathSensitivity.ABSOLUTE)
-    outputs.dir(layout.buildDirectory.dir("$preprocessedModelBuildDir"))
+    outputs.dir(layout.buildDirectory.dir("$mergedImportsModelBuildDir"))
     doLast {
         new File("$modelExamplesSrcDir").eachDir { dir ->
             exec {
-                commandLine "bash", "-c", "./venv/bin/python $preprocessedModelBuildDir/$dir.name$pythonExtension > $preprocessedModelBuildDir/$dir.name$yamlExtension"
+                commandLine "bash", "-c", "./venv/bin/python $mergedImportsModelBuildDir/$dir.name$pythonExtension > $mergedImportsModelBuildDir/$dir.name$yamlExtension"
+            }
+        }
+    }
+}
+
+tasks.register('buildEquationsSolver') {
+    dependsOn(buildModelExamplesWithMergedImports)
+    inputs.files(fileTree("$mergedImportsModelBuildDir"))
+        .withPathSensitivity(PathSensitivity.ABSOLUTE)
+    outputs.dir(layout.buildDirectory.dir("$solvedEquationsModelBuildDir"))
+    doLast {
+        new File("$modelExamplesSrcDir").eachDir { dir ->
+            exec {
+                commandLine "bash", "-c", "npm exec -- nunjucks -d $mergedImportsModelBuildDir/$dir.name$yamlExtension $querySrcDir/$solveForEquationsTemplateFileName > $solvedEquationsModelBuildDir/$dir.name$pythonExtension"
+            }
+        }
+    }
+}
+
+tasks.register('buildModelExamplesWithSolvedEquations') {
+    dependsOn(buildEquationsSolver)
+    inputs.files(fileTree("$solvedEquationsModelBuildDir"))
+        .withPathSensitivity(PathSensitivity.ABSOLUTE)
+    outputs.dir(layout.buildDirectory.dir("$solvedEquationsModelBuildDir"))
+    doLast {
+        new File("$modelExamplesSrcDir").eachDir { dir ->
+            exec {
+                commandLine "bash", "-c", "./venv/bin/python $solvedEquationsModelBuildDir/$dir.name$pythonExtension > $solvedEquationsModelBuildDir/$dir.name$yamlExtension"
             }
         }
     }
 }
 
 tasks.register('buildAnalyticalModelExamples') {
-    dependsOn(generatePreprocessedModelExamples)
+    dependsOn(buildModelExamplesWithSolvedEquations)
     inputs.files(fileTree("$modelExamplesBuildDir"))
         .withPathSensitivity(PathSensitivity.ABSOLUTE)
     outputs.dir(layout.buildDirectory.dir("$resultsBuildDir"))
     doLast {
         new File("$modelExamplesSrcDir").eachDir { dir ->
             exec {
-                commandLine "bash", "-c", "npm exec -- nunjucks -d $preprocessedModelBuildDir/$dir.name$yamlExtension $querySrcDir/$analyticalModelTemplateFileName > $analyticalModelBuildDir/$dir.name$pythonExtension"
+                commandLine "bash", "-c", "npm exec -- nunjucks -d $solvedEquationsModelBuildDir/$dir.name$yamlExtension $querySrcDir/$analyticalModelTemplateFileName > $analyticalModelBuildDir/$dir.name$pythonExtension"
             }
         }
     }

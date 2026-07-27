@@ -1,4 +1,4 @@
 description: Initial temperature of soil
 variable: T_i
-value: 20
-unit: degC
+value: 293.15
+unit: Kelvin
