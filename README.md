@@ -8,6 +8,7 @@ Demo m30ml project for conducting a transient heat transfer analysis
 - pip for python3
 - npm
 - gradle
+- yq
 
 ## Using project from cloned repo
 
